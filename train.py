@@ -115,9 +115,7 @@ def main():
         model=model,
         args=training_args,
         train_dataset=dataset,
-        tokenizer=tokenizer,
-        max_seq_length=MAX_SEQ_LEN,
-        dataset_text_field="text",
+        processing_class=tokenizer,
     )
 
     # Train
