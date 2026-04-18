@@ -7,7 +7,7 @@ from transformers import (
     BitsAndBytesConfig,
 )
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-from trl import SFTTrainer, SFTConfig
+from trl import SFTTrainer
 
 # ── Config ──────────────────────────────────────────────────────────────
 BASE_MODEL = os.environ.get("BASE_MODEL", "Qwen/Qwen2.5-0.5B-Instruct")
@@ -89,7 +89,7 @@ def main():
     model.print_trainable_parameters()
 
     # Training arguments
-    training_args = SFTConfig(
+    training_args = TrainingArguments(
         output_dir=OUTPUT_DIR,
         num_train_epochs=EPOCHS,
         per_device_train_batch_size=BATCH_SIZE,
@@ -103,8 +103,6 @@ def main():
         save_total_limit=2,
         bf16=torch.cuda.is_available(),
         fp16=False,
-        max_seq_length=MAX_SEQ_LEN,
-        dataset_text_field="text",
         gradient_checkpointing=True,
         gradient_checkpointing_kwargs={"use_reentrant": False},
         optim="adamw_8bit" if use_4bit else "adamw_torch",
@@ -117,7 +115,9 @@ def main():
         model=model,
         args=training_args,
         train_dataset=dataset,
-        processing_class=tokenizer,
+        tokenizer=tokenizer,
+        max_seq_length=MAX_SEQ_LEN,
+        dataset_text_field="text",
     )
 
     # Train
