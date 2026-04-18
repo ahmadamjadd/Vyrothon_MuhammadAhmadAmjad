@@ -1,0 +1,7 @@
+output/
+data/train.jsonl
+llama.cpp/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+wandb/
